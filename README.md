@@ -54,7 +54,60 @@ UPDATE productos
 SET precio = 180
 WHERE nombre_producto = 'Ventilador';
 
+
+
+
 delete from ventas
 where id_ventas=10;
 
 select * from ventas
+
+/* =============================================================================
+   PRE-ENTREGA 4: Consultas multicapa para análisis de negocio
+   Nota de ejecución: Este script extraido en clase crea las tablas e inserta datos.
+   ============================================================================= */
+
+CREATE SCHEMA IF NOT EXISTS practica_m4;
+SET search_path TO practica_m4;
+
+CREATE TABLE categorias (
+    categoria_id SERIAL PRIMARY KEY,
+    nombre_categoria VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE productos (
+    producto_id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    precio NUMERIC(10,2) NOT NULL,
+    id_categoria INT REFERENCES categorias(categoria_id)
+);
+
+CREATE TABLE clientes (
+    cliente_id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE ventas (
+    venta_id SERIAL PRIMARY KEY,
+    cliente_id INT REFERENCES clientes(cliente_id),
+    producto_id INT REFERENCES productos(producto_id),
+    cantidad INT NOT NULL,
+    fecha DATE NOT NULL
+);
+
+INSERT INTO categorias (nombre_categoria) VALUES
+('Tecnología'), ('Hogar'), ('Deportes');
+
+INSERT INTO productos (nombre, precio, id_categoria) VALUES
+('Notebook', 1200, 1), ('Mouse', 25, 1), ('Monitor', 300, 1),
+('Licuadora', 80, 2), ('Sartén', 40, 2), ('Aspiradora', 150, 2),
+('Pelota', 30, 3), ('Bicicleta', 500, 3), ('Mancuernas', 60, 3), ('Carpa', 200, 3);
+
+INSERT INTO clientes (nombre) VALUES
+('Ana'), ('Bruno'), ('Carla'), ('Diego'), ('Elena');
+
+INSERT INTO ventas (cliente_id, producto_id, cantidad, fecha) VALUES
+(1, 2, 2, '2024-03-01'), (1, 1, 1, '2024-03-05'), (1, 2, 1, '2024-04-10'),
+(2, 4, 1, '2024-03-07'), (2, 8, 1, '2024-04-02'),
+(3, 7, 3, '2024-03-15'), (3, 7, 2, '2024-04-20'), (3, 10, 1, '2024-05-01'),
+(4, 3, 2, '2024-05-03'), (4, 5, 1, '2024-05-04');
